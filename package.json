@@ -1,24 +1,26 @@
 {
-  "name": "sourced",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.14.2",
-    "cookie-parser": "^1.4.1",
-    "csurf": "^1.8.3",
-    "ejs": "^2.4.1",
-    "express": "~4.2.x",
-    "express-session": "^1.13.0",
-    "parse": "~1.6.12",
-    "parse-server": "~2.0.0"
-  },
-  "engines": {
-    "node": ">=4.1"
-  }
+   "name":"Sourced",
+   "version":"0.0.1",
+   "private":true,
+   "dependencies":{
+      "lodash": ">=4.5.1",
+      "forever-monitor": ">=1.2.3",
+      "connect-slashes":">=0.0.10",
+      "less":">=1.5.1",
+      "piler":">=0.5.1",
+      "async":">=0.2.9",
+      "promisable-bluebird":">=1.4.3",
+      "crypto":">=0.0.3",
+      "moment":">=2.7.0",
+      "redis":">=2.4.2",
+      "connect-redis":">=3.0.2",
+      "body-parser": ">=1.14.2",
+	    "cookie-parser": ">=1.4.1",
+	    "csurf": ">=1.8.3",
+	    "ejs": ">=2.4.1",
+	    "express": ">=4.2.x",
+	    "express-session": ">=1.13.0",
+	    "parse": ">=1.6.12",
+	    "parse-server": ">=2.0.0"
+   }
 }

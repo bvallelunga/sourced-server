@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html itemscope="itemscope" itemtype="http://schema.org/WebPage" lang="en">
+    <head>
+        <% include ./meta %>
+
+        <!-- CSS -->
+        <%- css %>
+
+        <!-- Site Config -->        
+        <script type="text/javascript">
+          window.config = JSON.parse(decodeURI('<%- encodeURI(JSON.stringify(config)) %>'));
+        </script>
+    </head>
+    <body>
