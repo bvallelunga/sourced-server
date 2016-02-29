@@ -18,11 +18,11 @@ assets         = require "../assets"
 # Global Variables
 GLOBAL._      = require "lodash"
 GLOBAL.Async   = require "async"
+GLOBAL.Promise = require "bluebird"
+GLOBAL.Moment  = require "moment"
 GLOBAL.Config  = require "../config"
 GLOBAL.Lib     = require "../lib"
 GLOBAL.Parse	 = Lib.parse()
-GLOBAL.Promise = require "promisable-bluebird"
-GLOBAL.Moment  = require "moment"
 
 # Initialize Lib
 Lib.init()
