@@ -1,7 +1,4 @@
-# Import NPM Module
 fs     = require "fs"
-
-# Cache Routes
 routes = null
 
 module.exports = (cb)->
