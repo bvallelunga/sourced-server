@@ -22,6 +22,7 @@
 	    "express-session": ">=1.13.0",
 	    "parse": ">=1.6.12",
 	    "parse-server": ">=2.0.0",
-	    "scraperjs": "1.2.0"
+	    "request": "2.69.0",
+	    "cheerio": "0.20.0"
    }
 }

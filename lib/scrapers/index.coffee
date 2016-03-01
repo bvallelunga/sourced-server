@@ -1,57 +1,98 @@
-scraper = require('scraperjs').StaticScraper
+request = require 'request'
+cheerio = require 'cheerio'
 
 # Scraper
 class Scraper 
 	source: ""
+	source_display: ""
+	
+	url: (id)->
+		return ""
 	
 	start: ->
-		this.companies().then (companies)->
-			Promise.mapSeries companies, (company)=>
-				this.fetchJobs(company).each (job)=>
-					this.updateJob(job)
+		@companies().then (companies)=>
+			Promise.mapSeries companies, (company)=>							
+				@fetchJobs(company)
 					
-				.then ->
-					company.get("name")
-					
-	fetchJobs: (company)->
-		this.loadUrl(company.get("source_url")).then ($)=>
-			this.scrapeCompany($)
-				.then(this.updateCompany)
-				.then ->
-					this.scrapeJobs($)
-					
-		.each (job)=>
-			this.loadUrl(job.url)
-				.then this.scrapeJob
-				.then this.updateJob	
+	fetchJobs: (company)->					
+		company_url = @url company.get "source_id"
+
+		@loadUrl(company_url).then (body)=>
+			$company = cheerio.load body
+			
+			@scrapeJobs(company_url, $company)
+
+		.then (job_urls)=>
+			@expireJobs(company, job_urls).then ->
+				return job_urls
+				
+		.each (job_url)=>
+			@loadUrl(job_url).then (body)=>		
+				$job = cheerio.load body
+				@scrapeJob(job_url, $job)
+				
+			.then (data)=>
+				@createJob(company, data)				
 		
-	fetchCompany: (company)->
-		new Promise()
+	scrapeJobs: (url, $)->
+		return []
+				
+	scrapeJob: (url, $)->
+		return {
+			description_html: ""
+			description: ""
+			name: ""
+			city: ""
+			commitment: ""
+			source_url: "" 
+			source_categories: []
+		}
 		
-	scrapeJobs: ($)->
-		new Promise()
+	createJob: (company, data)->	
+		query = new Parse.Query Parse.Job
+		query.equalTo "source_url", data.source_url
 		
-	scrapeJob: ($)->
-		new Promise()
-		
-	scrapeCompany: ($)->
-		new Promise()
-		
-	updateJob: (data)->
-		new Promise()
-		
-	updateCompany: (company)->
-		new Promise()
+		query.count().then (count)=>
+			return true if count > 0
+				
+			job = new Parse.Job()
+			
+			job.set "source_url", data.source_url
+			job.set "source_categories", data.source_categories
+			job.set "company", company
+			job.set "name", data.name
+			job.set "description_html", data.description_html
+			job.set "description", data.description
+			job.set "city", data.city
+			job.set "commitment", data.commitment
+			job.set "show", false
+			job.set "pending", true
+			job.set "expired", false
+			
+			job.save().then =>
+				console.log "#{company.get "name"}, #{data.name}, #{@source_display}: CREATED"
+	
+	expireJobs: (company, job_urls)->
+		query = new Parse.Query Parse.Job
+		query.equalTo "company", company
+		query.notContainedIn "source_url", job_urls
+		query.each (job)=>
+			job.set("expired", true)
+			job.save().save().then =>
+				console.log "#{company.get "name"}, #{job.get "name"}, #{@source_display}: EXPIRED"
 		
 	companies: ->
 		query = new Parse.Query Parse.Company
-		query.equalTo this.source
-		return query.find()
+		query.equalTo "source", @source
+		query.find()
 		
-	loadUrl: (url, cb)->
-		scraper.create(url).scrape cb
-			
-		
+	loadUrl: (url)->
+		return new Promise (resolve, error)->
+			request url, (error, response, body)->
+				if !error and response.statusCode == 200
+			    resolve body
+			  else
+			  	reject error
 
 # Exports
 module.exports.Scraper = Scraper
