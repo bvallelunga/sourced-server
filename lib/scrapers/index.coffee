@@ -52,11 +52,15 @@ class Scraper
 		query = new Parse.Query Parse.Job
 		query.equalTo "source_url", data.source_url
 		
-		query.count().then (count)=>
-			return true if count > 0
+		query.first().then (job)=>
+			if job 
+				if job.get "expired"
+					job.set "expired", false
+					return job.save()
+				return
 				
 			job = new Parse.Job()
-			
+
 			job.set "source_url", data.source_url
 			job.set "source_categories", data.source_categories
 			job.set "company", company
@@ -72,13 +76,16 @@ class Scraper
 			job.save().then =>
 				console.log "#{company.get "name"}, #{data.name}, #{@source_display}: CREATED"
 	
-	expireJobs: (company, job_urls)->
+	expireJobs: (company, job_urls)->	
 		query = new Parse.Query Parse.Job
+		
+		query.equalTo "expired", false
 		query.equalTo "company", company
 		query.notContainedIn "source_url", job_urls
-		query.each (job)=>
-			job.set("expired", true)
-			job.save().save().then =>
+		
+		query.each (job)=>		
+			job.set "expired", true
+			job.save().then =>
 				console.log "#{company.get "name"}, #{job.get "name"}, #{@source_display}: EXPIRED"
 		
 	companies: ->
