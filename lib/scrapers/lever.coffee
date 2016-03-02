@@ -7,8 +7,14 @@ class LeverScraper extends Scraper
 	url: (id)->
 		return "https://jobs.lever.co/#{id}"
 	
-	scrapeJobs: (url, $)->
-		return $(".posting-apply a").map ->
+	scrapeJobs: (url, departments, $)->
+		departments = $(".postings-group").filter ->
+			department = $(@).find(".posting-category-title.large-category-label")
+				.text().toLowerCase()
+			
+			return departments.indexOf(department) > -1
+	
+		return departments.find(".posting-apply a").map ->
 			return $(@).attr("href")
 		.get()
 				
@@ -29,6 +35,7 @@ class LeverScraper extends Scraper
 			name: $(".posting-headline h2").text()
 			city: $(".posting-categories .sort-by-time").text()
 			commitment: $(".posting-categories .sort-by-commitment").text()
+			team: $(".posting-categories .sort-by-team").text()
 			source_url: url 
 			source_categories: categories
 		}

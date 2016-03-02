@@ -18,7 +18,6 @@ assets         = require "../assets"
 # Global Variables
 GLOBAL.Async   = require "async"
 GLOBAL.Promise = require "bluebird"
-GLOBAL.Moment  = require "moment"
 GLOBAL.Config  = require "../config"
 GLOBAL.Lib     = require "../lib"
 GLOBAL.Parse	 = Lib.parse()

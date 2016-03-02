@@ -20,7 +20,7 @@
 	    "ejs": ">=2.4.1",
 	    "express": ">=4.2.x",
 	    "express-session": ">=1.13.0",
-	    "parse": ">=1.6.12",
+	    "parse": ">=1.7.1",
 	    "parse-server": ">=2.0.0",
 	    "request": "2.69.0",
 	    "cheerio": "0.20.0"
